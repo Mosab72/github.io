@@ -3,200 +3,1140 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة المعلومات - التحليلات والرسوم البيانية</title>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>لوحة معلومات البرامج الأكاديمية</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #667eea;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        .nav-tabs {
+            background: white;
+            padding: 15px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .nav-tab {
+            padding: 12px 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: all 0.3s;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        .nav-tab:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .nav-tab.active {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            text-align: center;
+            transition: transform 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-number {
+            font-size: 3em;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 1.1em;
+            margin-top: 10px;
+        }
+
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .chart-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .chart-title {
+            font-size: 1.3em;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .table-container {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            text-align: right;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #eee;
+            text-align: right;
+        }
+
+        tr:hover {
+            background: #f8f9ff;
+        }
+
+        .filter-section {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        .filter-group {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .filter-group label {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .filter-group select, .filter-group input {
+            padding: 10px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-family: 'Cairo', sans-serif;
+            font-size: 1em;
+            min-width: 200px;
+        }
+
+        .filter-group button {
+            padding: 10px 25px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-family: 'Cairo', sans-serif;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .filter-group button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .status-badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .status-completed {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-review {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .status-institutional {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .timeline-container {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        .timeline {
+            position: relative;
+            padding: 20px 0;
+        }
+
+        .timeline-item {
+            padding: 20px;
+            margin-bottom: 20px;
+            background: #f8f9ff;
+            border-right: 4px solid #667eea;
+            border-radius: 10px;
+            transition: all 0.3s;
+        }
+
+        .timeline-item:hover {
+            transform: translateX(-5px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
+        }
+
+        .timeline-date {
+            font-weight: 700;
+            color: #667eea;
+            font-size: 1.1em;
+            margin-bottom: 10px;
+        }
+
+        .timeline-content {
+            color: #666;
+        }
+
+        @media (max-width: 768px) {
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+
+            h1 {
+                font-size: 1.8em;
+            }
+
+            .nav-tabs {
+                flex-direction: column;
+            }
+
+            .filter-group {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .filter-group select, .filter-group input {
+                width: 100%;
+            }
+        }
+
+        .full-width-chart {
+            grid-column: 1 / -1;
+        }
+
+        .intro-section {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            line-height: 1.8;
+        }
+
+        .intro-section h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .intro-section p {
+            color: #666;
+            font-size: 1.1em;
+        }
+    </style>
 </head>
 <body>
-    <!-- الشريط الجانبي -->
-    <aside class="sidebar">
-        <div class="logo">
-            <i class="fas fa-graduation-cap"></i>
-            <h2>لوحة التحكم</h2>
-        </div>
-        <nav class="nav-menu">
-            <a href="index.html" class="nav-item">
-                <i class="fas fa-home"></i>
-                <span>الرئيسية</span>
-            </a>
-            <a href="dashboard.html" class="nav-item active">
-                <i class="fas fa-chart-line"></i>
-                <span>لوحة المعلومات</span>
-            </a>
-            <a href="universities.html" class="nav-item">
-                <i class="fas fa-university"></i>
-                <span>إحصائيات الجامعات</span>
-            </a>
-            <a href="programs.html" class="nav-item">
-                <i class="fas fa-book"></i>
-                <span>تفاصيل البرامج</span>
-            </a>
-        </nav>
-    </aside>
-
-    <!-- المحتوى الرئيسي -->
-    <main class="main-content">
-        <!-- الشريط العلوي -->
-        <header class="top-bar">
-            <div class="search-box">
-                <i class="fas fa-search"></i>
-                <input type="text" placeholder="البحث...">
-            </div>
-            <div class="user-info">
-                <span class="date" id="currentDate"></span>
-                <div class="user-avatar">
-                    <i class="fas fa-user"></i>
-                </div>
-            </div>
+    <div class="container">
+        <header>
+            <h1>🎓 لوحة معلومات البرامج الأكاديمية</h1>
+            <p class="subtitle">إحصائيات شاملة للبرامج الأكاديمية والزيارات الميدانية للجامعات السعودية</p>
         </header>
 
-        <!-- محتوى لوحة المعلومات -->
-        <section class="content">
-            <h1 class="page-title">التحليلات والرسوم البيانية</h1>
+        <div class="nav-tabs">
+            <button class="nav-tab active" onclick="switchTab('home')">الرئيسية</button>
+            <button class="nav-tab" onclick="switchTab('dashboard')">لوحة التحكم</button>
+            <button class="nav-tab" onclick="switchTab('universities')">إحصائيات الجامعات</button>
+            <button class="nav-tab" onclick="switchTab('programs')">تفاصيل البرامج</button>
+            <button class="nav-tab" onclick="switchTab('timeline')">الجدول الزمني</button>
+        </div>
 
-            <!-- بطاقات الإحصائيات السريعة -->
+        <!-- Home Tab -->
+        <div id="home" class="tab-content active">
+            <div class="intro-section">
+                <h2>📚 نبذة عن المشروع</h2>
+                <p>
+                    مرحباً بكم في لوحة المعلومات الشاملة للبرامج الأكاديمية والزيارات الميدانية. 
+                    تهدف هذه المنصة إلى توفير رؤية واضحة وشاملة حول البرامج الأكاديمية المختلفة في الجامعات السعودية، 
+                    وتتبع حالة الزيارات الميدانية والاعتمادات الأكاديمية.
+                </p>
+                <p>
+                    تشمل البيانات 23 جامعة وكلية سعودية، بإجمالي 81 برنامجاً أكاديمياً متنوعاً في مختلف التخصصات 
+                    بما في ذلك العلوم الإسلامية والعربية، التربوية، الهندسية، الصحية، والعلمية.
+                </p>
+            </div>
+
             <div class="stats-grid">
-                <div class="stat-card blue">
-                    <div class="stat-icon">
-                        <i class="fas fa-university"></i>
-                    </div>
-                    <div class="stat-info">
-                        <h3>عدد الجامعات</h3>
-                        <p class="stat-number" id="totalUniversities">0</p>
-                    </div>
+                <div class="stat-card">
+                    <div class="stat-number">81</div>
+                    <div class="stat-label">إجمالي البرامج</div>
                 </div>
-
-                <div class="stat-card green">
-                    <div class="stat-icon">
-                        <i class="fas fa-book"></i>
-                    </div>
-                    <div class="stat-info">
-                        <h3>إجمالي البرامج</h3>
-                        <p class="stat-number" id="totalPrograms">0</p>
-                    </div>
+                <div class="stat-card">
+                    <div class="stat-number">23</div>
+                    <div class="stat-label">عدد الجامعات</div>
                 </div>
-
-                <div class="stat-card orange">
-                    <div class="stat-icon">
-                        <i class="fas fa-check-circle"></i>
-                    </div>
-                    <div class="stat-info">
-                        <h3>الزيارات المنفذة</h3>
-                        <p class="stat-number" id="completedVisits">0</p>
-                    </div>
+                <div class="stat-card">
+                    <div class="stat-number">5</div>
+                    <div class="stat-label">التخصصات الرئيسية</div>
                 </div>
-
-                <div class="stat-card purple">
-                    <div class="stat-icon">
-                        <i class="fas fa-clock"></i>
-                    </div>
-                    <div class="stat-info">
-                        <h3>الزيارات المعلقة</h3>
-                        <p class="stat-number" id="pendingVisits">0</p>
-                    </div>
+                <div class="stat-card">
+                    <div class="stat-number">20</div>
+                    <div class="stat-label">زيارة منفذة</div>
                 </div>
             </div>
 
-            <!-- الرسوم البيانية -->
             <div class="charts-grid">
-                <!-- رسم بياني شريطي: الزيارات حسب الجامعة -->
-                <div class="chart-container">
-                    <div class="chart-header">
-                        <h3><i class="fas fa-chart-bar"></i> عدد الزيارات حسب الجامعة</h3>
-                        <div class="chart-controls">
-                            <select id="universityFilter" class="filter-select">
-                                <option value="all">جميع الجامعات</option>
-                                <option value="top10">أعلى 10 جامعات</option>
-                            </select>
-                        </div>
-                    </div>
-                    <canvas id="universityVisitsChart"></canvas>
+                <div class="chart-card">
+                    <h3 class="chart-title">توزيع البرامج حسب التخصص</h3>
+                    <canvas id="homeSpecializationChart"></canvas>
                 </div>
-
-                <!-- رسم بياني دائري: توزيع حالة البرامج -->
-                <div class="chart-container">
-                    <div class="chart-header">
-                        <h3><i class="fas fa-chart-pie"></i> توزيع حالة البرامج</h3>
-                    </div>
-                    <canvas id="programStatusChart"></canvas>
+                <div class="chart-card">
+                    <h3 class="chart-title">توزيع حالات الزيارات</h3>
+                    <canvas id="homeStatusChart"></canvas>
                 </div>
+            </div>
+        </div>
 
-                <!-- رسم بياني شريطي: البرامج حسب التخصص -->
-                <div class="chart-container">
-                    <div class="chart-header">
-                        <h3><i class="fas fa-layer-group"></i> توزيع البرامج حسب التخصص</h3>
-                    </div>
-                    <canvas id="specialtyDistributionChart"></canvas>
+        <!-- Dashboard Tab -->
+        <div id="dashboard" class="tab-content">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number">23</div>
+                    <div class="stat-label">الجامعات المشاركة</div>
                 </div>
-
-                <!-- رسم بياني خطي: الزيارات عبر الوقت -->
-                <div class="chart-container">
-                    <div class="chart-header">
-                        <h3><i class="fas fa-calendar-alt"></i> الجدول الزمني للزيارات</h3>
-                        <div class="chart-controls">
-                            <select id="timelineFilter" class="filter-select">
-                                <option value="all">كل الفترة</option>
-                                <option value="completed">المنفذة فقط</option>
-                                <option value="pending">المعلقة فقط</option>
-                            </select>
-                        </div>
-                    </div>
-                    <canvas id="visitsTimelineChart"></canvas>
+                <div class="stat-card">
+                    <div class="stat-number">81</div>
+                    <div class="stat-label">البرامج المسجلة</div>
                 </div>
-
-                <!-- رسم بياني: البرامج حسب المستوى الأكاديمي -->
-                <div class="chart-container">
-                    <div class="chart-header">
-                        <h3><i class="fas fa-graduation-cap"></i> توزيع المستويات الأكاديمية</h3>
-                    </div>
-                    <canvas id="academicLevelChart"></canvas>
+                <div class="stat-card">
+                    <div class="stat-number">20</div>
+                    <div class="stat-label">زيارات مكتملة</div>
                 </div>
-
-                <!-- رسم بياني: أداء الجامعات -->
-                <div class="chart-container">
-                    <div class="chart-header">
-                        <h3><i class="fas fa-trophy"></i> أداء الجامعات (حسب عدد البرامج)</h3>
-                    </div>
-                    <canvas id="universityPerformanceChart"></canvas>
+                <div class="stat-card">
+                    <div class="stat-number">53</div>
+                    <div class="stat-label">دعوات مرسلة</div>
                 </div>
             </div>
 
-            <!-- جدول الملخص -->
-            <div class="summary-section">
-                <h2>ملخص البيانات</h2>
-                <div class="summary-cards">
-                    <div class="summary-card">
-                        <h4>البرامج الإسلامية والعربية</h4>
-                        <p class="summary-number" id="islamicSummary">0</p>
-                        <small>برنامج</small>
-                    </div>
-                    <div class="summary-card">
-                        <h4>البرامج الإنسانية والتربوية</h4>
-                        <p class="summary-number" id="educationSummary">0</p>
-                        <small>برنامج</small>
-                    </div>
-                    <div class="summary-card">
-                        <h4>البرامج الصحية</h4>
-                        <p class="summary-number" id="healthSummary">0</p>
-                        <small>برنامج</small>
-                    </div>
-                    <div class="summary-card">
-                        <h4>البرامج العلمية</h4>
-                        <p class="summary-number" id="scienceSummary">0</p>
-                        <small>برنامج</small>
-                    </div>
-                    <div class="summary-card">
-                        <h4>البرامج الهندسية</h4>
-                        <p class="summary-number" id="engineeringSummary">0</p>
-                        <small>برنامج</small>
-                    </div>
+            <div class="charts-grid">
+                <div class="chart-card">
+                    <h3 class="chart-title">عدد الزيارات لكل جامعة</h3>
+                    <canvas id="visitsChart"></canvas>
+                </div>
+                <div class="chart-card">
+                    <h3 class="chart-title">توزيع البرامج حسب الحالة</h3>
+                    <canvas id="statusPieChart"></canvas>
                 </div>
             </div>
-        </section>
-    </main>
 
-    <script src="data.js"></script>
-    <script src="charts.js"></script>
+            <div class="charts-grid">
+                <div class="chart-card full-width-chart">
+                    <h3 class="chart-title">عدد البرامج لكل جامعة</h3>
+                    <canvas id="programsChart"></canvas>
+                </div>
+            </div>
+
+            <div class="charts-grid">
+                <div class="chart-card">
+                    <h3 class="chart-title">توزيع البرامج حسب التخصص</h3>
+                    <canvas id="specializationChart"></canvas>
+                </div>
+                <div class="chart-card">
+                    <h3 class="chart-title">توزيع أنواع البرامج</h3>
+                    <canvas id="programTypeChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Universities Tab -->
+        <div id="universities" class="tab-content">
+            <div class="filter-section">
+                <div class="filter-group">
+                    <label>تصفية حسب التخصص:</label>
+                    <select id="specializationFilter" onchange="filterTable()">
+                        <option value="all">جميع التخصصات</option>
+                        <option value="الإسلامية والعربية">الإسلامية والعربية</option>
+                        <option value="الإنسانية والتربوية">الإنسانية والتربوية</option>
+                        <option value="الهندسية">الهندسية</option>
+                        <option value="الصحية">الصحية</option>
+                        <option value="العلمية">العلمية</option>
+                        <option value="مؤسسي">مؤسسي</option>
+                    </select>
+                    
+                    <label>تصفية حسب الحالة:</label>
+                    <select id="statusFilter" onchange="filterTable()">
+                        <option value="all">جميع الحالات</option>
+                        <option value="نُفذت الزيارة">نُفذت الزيارة</option>
+                        <option value="أُرسلت الدعوات">أُرسلت الدعوات</option>
+                        <option value="للمراجعة من الإدارة المختصة واعادة العرض على اللجنة">للمراجعة</option>
+                    </select>
+                    
+                    <button onclick="resetFilters()">إعادة تعيين</button>
+                </div>
+            </div>
+
+            <div class="table-container">
+                <h3 class="chart-title">قائمة الجامعات والبرامج</h3>
+                <table id="universitiesTable">
+                    <thead>
+                        <tr>
+                            <th>الجامعة</th>
+                            <th>عدد البرامج</th>
+                            <th>التخصص</th>
+                            <th>الحالة</th>
+                            <th>تاريخ الزيارة</th>
+                        </tr>
+                    </thead>
+                    <tbody id="universitiesTableBody">
+                        <!-- Data will be populated by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Programs Tab -->
+        <div id="programs" class="tab-content">
+            <div class="filter-section">
+                <div class="filter-group">
+                    <label>البحث عن برنامج:</label>
+                    <input type="text" id="programSearch" onkeyup="searchPrograms()" placeholder="ابحث عن برنامج...">
+                    
+                    <label>الجامعة:</label>
+                    <select id="universityFilter" onchange="filterPrograms()">
+                        <option value="all">جميع الجامعات</option>
+                    </select>
+                    
+                    <button onclick="resetProgramFilters()">إعادة تعيين</button>
+                </div>
+            </div>
+
+            <div class="table-container">
+                <h3 class="chart-title">تفاصيل البرامج الأكاديمية</h3>
+                <table id="programsTable">
+                    <thead>
+                        <tr>
+                            <th>البرنامج</th>
+                            <th>الجامعة</th>
+                            <th>التخصص</th>
+                            <th>تاريخ الزيارة</th>
+                            <th>الحالة</th>
+                            <th>عدد البرامج</th>
+                        </tr>
+                    </thead>
+                    <tbody id="programsTableBody">
+                        <!-- Data will be populated by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Timeline Tab -->
+        <div id="timeline" class="tab-content">
+            <div class="timeline-container">
+                <h3 class="chart-title">الجدول الزمني للزيارات</h3>
+                <div class="timeline" id="timelineContent">
+                    <!-- Timeline will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data
+        const programsData = [
+            {program: "ماجستير أصول التربية الإسلامية", university: "الجامعة الإسلامية", date: "30 November 2025", specialization: "الإنسانية والتربوية", status: "أُرسلت الدعوات", count: 1},
+            {program: "بكالوريوس رياض الأطفال", university: "جامعة الإمام عبدالرحمن بن فيصل", date: "14 December 2025", specialization: "الإنسانية والتربوية", status: "أُرسلت الدعوات", count: 1},
+            {program: "بكالوريوس تعليم الطفولة المبكرة", university: "جامعة الجوف", date: "16 November 2025", specialization: "الإنسانية والتربوية", status: "نُفذت الزيارة", count: 1},
+            {program: "بكالوريوس هندسة البرمجيات", university: "جامعة الجوف", date: "21 December 2025", specialization: "الهندسية", status: "للمراجعة من الإدارة المختصة واعادة العرض على اللجنة", count: 1},
+            {program: "ماجستير العلوم في الأمن السيبراني", university: "جامعة الجوف", date: "21 December 2025", specialization: "الهندسية", status: "للمراجعة من الإدارة المختصة واعادة العرض على اللجنة", count: 1},
+            {program: "ماجستير الرياضيات", university: "جامعة الجوف", date: "25 January 2026", specialization: "العلمية", status: "أُرسلت الدعوات", count: 1},
+            {program: "ماجستير مكافحة العدوى", university: "جامعة الجوف", date: "25 January 2026", specialization: "الصحية", status: "أُرسلت الدعوات", count: 1},
+            {program: "ماجستير الاستعاضة السنية", university: "جامعة الجوف", date: "25 January 2026", specialization: "الصحية", status: "أُرسلت الدعوات", count: 1},
+            {program: "ماجستير التربية الخاصة", university: "جامعة الطائف", date: "19 October 2025", specialization: "الإنسانية والتربوية", status: "نُفذت الزيارة", count: 1},
+            {program: "بكالوريوس الفنون", university: "جامعة الطائف", date: "21 December 2025", specialization: "الإنسانية والتربوية", status: "أُرسلت الدعوات", count: 1},
+            {program: "ماجستير إدارة الأعمال", university: "جامعة الفيصل", date: "14 December 2025", specialization: "الإنسانية والتربوية", status: "أُرسلت الدعوات", count: 1},
+            {program: "بكالوريوس الشريعة", university: "جامعة القصيم", date: "30 November 2025", specialization: "الإسلامية والعربية", status: "أُرسلت الدعوات", count: 1},
+            {program: "دكتوراه أصول الفقه", university: "جامعة القصيم", date: "07 December 2025", specialization: "الإسلامية والعربية", status: "أُرسلت الدعوات", count: 1},
+            {program: "بكالوريوس الصحة العامة", university: "جامعة القصيم", date: "09 December 2025", specialization: "الصحية", status: "أُرسلت الدعوات", count: 1},
+            {program: "دكتوراه العقيدة والمذاهب المعاصرة", university: "جامعة القصيم", date: "15 December 2025", specialization: "الإسلامية والعربية", status: "أُرسلت الدعوات", count: 1},
+            {program: "ماجستير الأنظمة", university: "جامعة القصيم", date: "25 January 2026", specialization: "الإسلامية والعربية", status: "أُرسلت الدعوات", count: 1},
+            {program: "بكالوريوس القانون (الغاط)", university: "جامعة المجمعة", date: "13 October 2025", specialization: "الإسلامية والعربية", status: "نُفذت الزيارة", count: 1},
+            {program: "بكالوريوس اللغة العربية", university: "جامعة المجمعة", date: "19 October 2025", specialization: "الإسلامية والعربية", status: "نُفذت الزيارة", count: 1},
+            {program: "ماجستير اللغويات التطبيقية", university: "جامعة المجمعة", date: "07 December 2025", specialization: "الإنسانية والتربوية", status: "أُرسلت الدعوات", count: 1},
+            {program: "الماجستير في إدارة الأعمال، إدارة الموارد البشرية", university: "جامعة المجمعة", date: "14 December 2025", specialization: "الإنسانية والتربوية", status: "أُرسلت الدعوات", count: 2},
+            {program: "ماجستير العلوم في هندسة الطاقة المتجددة", university: "جامعة المجمعة", date: "21 December 2025", specialization: "الهندسية", status: "للمراجعة من الإدارة المختصة واعادة العرض على اللجنة", count: 1},
+            {program: "ماجستير القانون العام والخاص (الغاط)", university: "جامعة المجمعة", date: "25 January 2026", specialization: "الإسلامية والعربية", status: "أُرسلت الدعوات", count: 2},
+            {program: "البكالوريوس في نظم المعلومات الصحية، تقنية التخدير", university: "جامعة المعرفة", date: "07 December 2025", specialization: "الصحية", status: "أُرسلت الدعوات", count: 2},
+            {program: "ماجستير الدراسات الإسلامية (عقيدة)", university: "جامعة الملك سعود", date: "26 October 2025", specialization: "الإسلامية والعربية", status: "نُفذت الزيارة", count: 1},
+            {program: "[حضوري] بكالوريوس الطب والجراحة", university: "جامعة الملك سعود", date: "01 December 2025", specialization: "الصحية", status: "أُرسلت الدعوات", count: 1},
+            {program: "الماجستير التنفيذي في التشريعات الصيدلية", university: "جامعة الملك سعود", date: "01 December 2025", specialization: "الصحية", status: "أُرسلت الدعوات", count: 1},
+            {program: "ماجستير ودكتوراه الخدمة الاجتماعية", university: "جامعة الملك سعود", date: "14 December 2025", specialization: "الإنسانية والتربوية", status: "أُرسلت الدعوات", count: 2},
+            {program: "ماجستير التوجيه والإرشاد التربوي", university: "جامعة الملك عبدالعزيز", date: "07 December 2025", specialization: "الإنسانية والتربوية", status: "أُرسلت الدعوات", count: 1},
+            {program: "بكالوريوس التمويل", university: "جامعة الملك عبدالعزيز", date: "07 December 2025", specialization: "الإنسانية والتربوية", status: "أُرسلت الدعوات", count: 1},
+            {program: "بكالوريوس طب الأسنان", university: "جامعة الملك عبدالعزيز", date: "09 December 2025", specialization: "الصحية", status: "أُرسلت الدعوات", count: 1},
+            {program: "ماجستير الكتاب والسنة", university: "جامعة الملك فيصل", date: "05 October 2025", specialization: "الإسلامية والعربية", status: "نُفذت الزيارة", count: 1},
+            {program: "ماجستير العقيدة والمذاهب المعاصرة", university: "جامعة الملك فيصل", date: "13 October 2025", specialization: "الإسلامية والعربية", status: "نُفذت الزيارة", count: 1},
+            {program: "ماجستير ودكتوراه الفقه وأصوله", university: "جامعة الملك فيصل", date: "19 October 2025", specialization: "الإسلامية والعربية", status: "نُفذت الزيارة", count: 2},
+            {program: "بكالوريوس أصول الدين", university: "جامعة الملك فيصل", date: "26 October 2025", specialization: "الإسلامية والعربية", status: "نُفذت الزيارة", count: 1},
+            {program: "دكتوراه التفسير وعلوم القرآن", university: "جامعة الملك فيصل", date: "07 December 2025", specialization: "الإسلامية والعربية", status: "أُرسلت الدعوات", count: 1},
+            {program: "ماجستير العلوم الصيدلانية", university: "جامعة الملك فيصل", date: "07 December 2025", specialization: "الصحية", status: "أُرسلت الدعوات", count: 1},
+            {program: "ماجستير التوجيه والإرشاد النفسي", university: "جامعة الملك فيصل", date: "14 December 2025", specialization: "الإنسانية والتربوية", status: "أُرسلت الدعوات", count: 1},
+            {program: "ماجستير الأدب والنقد والبلاغة، اللغويات", university: "جامعة الملك فيصل", date: "15 December 2025", specialization: "الإسلامية والعربية", status: "أُرسلت الدعوات", count: 2},
+            {program: "الماجستير في الإدارة التربوية، تقنيات التعليم", university: "جامعة الملك فيصل", date: "21 December 2025", specialization: "الإنسانية والتربوية", status: "أُرسلت الدعوات", count: 2},
+            {program: "الماجستير في المحاسبة، اقتصادات الطاقة", university: "جامعة الملك فيصل", date: "21 December 2025", specialization: "الإنسانية والتربوية", status: "أُرسلت الدعوات", count: 2},
+            {program: "بكالوريوس علم المعلومات الجغرافية", university: "جامعة بيشة", date: "30 November 2025", specialization: "الإنسانية والتربوية", status: "أُرسلت الدعوات", count: 1},
+            {program: "ماجستير الفقه", university: "جامعة تبوك", date: "07 December 2025", specialization: "الإسلامية والعربية", status: "أُرسلت الدعوات", count: 1},
+            {program: "ماجستير الإدارة الهندسية", university: "جامعة تبوك", date: "14 December 2025", specialization: "الهندسية", status: "أُرسلت الدعوات", count: 1},
+            {program: "البكالوريوس في نظم المعلومات الإدارية، التسويق، المحاسبة", university: "جامعة جازان", date: "07 December 2025", specialization: "الإنسانية والتربوية", status: "أُرسلت الدعوات", count: 3},
+            {program: "بكالوريوس العلاج التنفسي", university: "جامعة جازان", date: "09 December 2025", specialization: "الصحية", status: "أُرسلت الدعوات", count: 1},
+            {program: "دكتوراه الفلسفة في اللغة العربية", university: "جامعة جازان", date: "25 January 2026", specialization: "الإسلامية والعربية", status: "أُرسلت الدعوات", count: 1},
+            {program: "بكالوريوس الرسم والفنون، تصميم الأزياء", university: "جامعة جدة", date: "30 November 2025", specialization: "الإنسانية والتربوية", status: "أُرسلت الدعوات", count: 2},
+            {program: "[حضوري] بكالوريوس الطب والجراحة", university: "جامعة جدة", date: "01 December 2025", specialization: "الصحية", status: "أُرسلت الدعوات", count: 1},
+            {program: "البكالوريوس في الإدارة الرياضية، التدريب الرياضي", university: "جامعة جدة", date: "07 December 2025", specialization: "الإنسانية والتربوية", status: "أُرسلت الدعوات", count: 2},
+            {program: "ماجستير تقنيات التعليم والمناهج", university: "جامعة حائل", date: "12 October 2025", specialization: "الإنسانية والتربوية", status: "نُفذت الزيارة", count: 2},
+            {program: "ماجستير القيادة التربوية", university: "جامعة حائل", date: "07 December 2025", specialization: "الإنسانية والتربوية", status: "أُرسلت الدعوات", count: 1},
+            {program: "ماجستير الفقه", university: "جامعة حائل", date: "15 December 2025", specialization: "الإسلامية والعربية", status: "أُرسلت الدعوات", count: 1},
+            {program: "ماجستير فقه النظام التجاري", university: "جامعة حائل", date: "25 January 2026", specialization: "الإسلامية والعربية", status: "أُرسلت الدعوات", count: 1},
+            {program: "البكالوريوس في إدارة الأعمال، المحاسبة، الإدارة المالية", university: "جامعة حفر الباطن", date: "30 November 2025", specialization: "الإنسانية والتربوية", status: "أُرسلت الدعوات", count: 3},
+            {program: "البكالوريوس في الفيزياء، الرياضيات", university: "جامعة حفر الباطن", date: "07 December 2025", specialization: "العلمية", status: "أُرسلت الدعوات", count: 2},
+            {program: "بكالوريوس الحقوق", university: "جامعة طيبة", date: "13 October 2025", specialization: "الإسلامية والعربية", status: "نُفذت الزيارة", count: 1},
+            {program: "بكالوريوس دراسات إسلامية", university: "جامعة طيبة", date: "19 October 2025", specialization: "الإسلامية والعربية", status: "نُفذت الزيارة", count: 1},
+            {program: "البكالوريوس في الأحياء، الكيمياء", university: "جامعة طيبة", date: "07 December 2025", specialization: "العلمية", status: "أُرسلت الدعوات", count: 2},
+            {program: "البكالوريوس في علوم المختبرات، الأشعة، التغذية", university: "جامعة طيبة", date: "09 December 2025", specialization: "الصحية", status: "أُرسلت الدعوات", count: 3},
+            {program: "البكالوريوس في الجيولوجيا، الفيزياء", university: "جامعة طيبة", date: "09 December 2025", specialization: "العلمية", status: "أُرسلت الدعوات", count: 2},
+            {program: "بكالوريوس نظم المعلومات", university: "جامعة طيبة", date: "21 December 2025", specialization: "الهندسية", status: "للمراجعة من الإدارة المختصة واعادة العرض على اللجنة", count: 1},
+            {program: "بكالوريوس علوم الحاسب الآلي", university: "جامعة طيبة", date: "21 December 2025", specialization: "الهندسية", status: "للمراجعة من الإدارة المختصة واعادة العرض على اللجنة", count: 1},
+            {program: "بكالوريوس علوم الحاسب - تجديد", university: "جامعة عفت", date: "21 December 2025", specialization: "الهندسية", status: "للمراجعة من الإدارة المختصة واعادة العرض على اللجنة", count: 1},
+            {program: "بكالوريوس اللغة العربية", university: "جامعة نجران", date: "05 October 2025", specialization: "الإسلامية والعربية", status: "نُفذت الزيارة", count: 1},
+            {program: "بكالوريوس الأنظمة", university: "جامعة نجران", date: "09 November 2025", specialization: "الإسلامية والعربية", status: "نُفذت الزيارة", count: 1},
+            {program: "البكالوريوس في العلاج الطبيعي، علوم الأشعة", university: "جامعة نجران", date: "07 December 2025", specialization: "الصحية", status: "أُرسلت الدعوات", count: 2},
+            {program: "بكالوريوس القانون", university: "كليات الاصالة", date: "05 October 2025", specialization: "الإسلامية والعربية", status: "نُفذت الزيارة", count: 1},
+            {program: "بكالوريوس التصميم الداخلي، العمارة", university: "كليات الأصالة", date: "21 December 2025", specialization: "الهندسية", status: "أُرسلت الدعوات", count: 2},
+            {program: "البكالوريوس في الموارد البشرية، الإدارة المالية", university: "كليات الأصالة", date: "21 December 2025", specialization: "الإنسانية والتربوية", status: "أُرسلت الدعوات", count: 2},
+            {program: "بكالوريوس التصميم الداخلي", university: "كلية جدة العالمية", date: "21 December 2025", specialization: "الهندسية", status: "للمراجعة من الإدارة المختصة واعادة العرض على اللجنة", count: 1},
+            {program: "زيارة مؤسسية", university: "كلية فقيه للعلوم الطبية", date: "14 December 2025", specialization: "مؤسسي", status: "أُرسلت الدعوات", count: 0},
+            {program: "زيارة مؤسسية", university: "كلية البترجي للعلوم الطبية", date: "28 December 2025", specialization: "مؤسسي", status: "أُرسلت الدعوات", count: 0}
+        ];
+
+        // Initialize charts
+        let charts = {};
+
+        function initCharts() {
+            // Home Specialization Chart
+            const homeSpecCtx = document.getElementById('homeSpecializationChart').getContext('2d');
+            charts.homeSpec = new Chart(homeSpecCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['الإسلامية والعربية', 'الإنسانية والتربوية', 'الهندسية', 'الصحية', 'العلمية', 'مؤسسي'],
+                    datasets: [{
+                        data: [29, 28, 11, 17, 8, 2],
+                        backgroundColor: [
+                            '#667eea',
+                            '#764ba2',
+                            '#f093fb',
+                            '#4facfe',
+                            '#43e97b',
+                            '#fa709a'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                font: {
+                                    family: 'Cairo',
+                                    size: 12
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Home Status Chart
+            const homeStatusCtx = document.getElementById('homeStatusChart').getContext('2d');
+            charts.homeStatus = new Chart(homeStatusCtx, {
+                type: 'pie',
+                data: {
+                    labels: ['نُفذت الزيارة', 'أُرسلت الدعوات', 'للمراجعة'],
+                    datasets: [{
+                        data: [20, 53, 8],
+                        backgroundColor: ['#4ade80', '#fbbf24', '#f87171']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                font: {
+                                    family: 'Cairo',
+                                    size: 12
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Visits Chart
+            const visitsCtx = document.getElementById('visitsChart').getContext('2d');
+            const universityVisits = {};
+            programsData.forEach(item => {
+                if (item.status === 'نُفذت الزيارة') {
+                    universityVisits[item.university] = (universityVisits[item.university] || 0) + 1;
+                }
+            });
+            
+            charts.visits = new Chart(visitsCtx, {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(universityVisits),
+                    datasets: [{
+                        label: 'عدد الزيارات المنفذة',
+                        data: Object.values(universityVisits),
+                        backgroundColor: 'rgba(102, 126, 234, 0.8)',
+                        borderColor: 'rgba(102, 126, 234, 1)',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 1,
+                                font: {
+                                    family: 'Cairo'
+                                }
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                font: {
+                                    family: 'Cairo',
+                                    size: 10
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            labels: {
+                                font: {
+                                    family: 'Cairo'
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Status Pie Chart
+            const statusPieCtx = document.getElementById('statusPieChart').getContext('2d');
+            const statusCounts = {
+                'نُفذت الزيارة': 0,
+                'أُرسلت الدعوات': 0,
+                'للمراجعة من الإدارة المختصة واعادة العرض على اللجنة': 0
+            };
+            
+            programsData.forEach(item => {
+                if (statusCounts.hasOwnProperty(item.status)) {
+                    statusCounts[item.status]++;
+                }
+            });
+
+            charts.statusPie = new Chart(statusPieCtx, {
+                type: 'pie',
+                data: {
+                    labels: ['نُفذت الزيارة', 'أُرسلت الدعوات', 'للمراجعة'],
+                    datasets: [{
+                        data: [
+                            statusCounts['نُفذت الزيارة'],
+                            statusCounts['أُرسلت الدعوات'],
+                            statusCounts['للمراجعة من الإدارة المختصة واعادة العرض على اللجنة']
+                        ],
+                        backgroundColor: [
+                            '#4ade80',
+                            '#fbbf24',
+                            '#f87171'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                font: {
+                                    family: 'Cairo',
+                                    size: 12
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Programs Chart
+            const programsCtx = document.getElementById('programsChart').getContext('2d');
+            const universityPrograms = {};
+            programsData.forEach(item => {
+                universityPrograms[item.university] = (universityPrograms[item.university] || 0) + item.count;
+            });
+
+            charts.programs = new Chart(programsCtx, {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(universityPrograms),
+                    datasets: [{
+                        label: 'عدد البرامج',
+                        data: Object.values(universityPrograms),
+                        backgroundColor: 'rgba(118, 75, 162, 0.8)',
+                        borderColor: 'rgba(118, 75, 162, 1)',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    indexAxis: 'y',
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            ticks: {
+                                font: {
+                                    family: 'Cairo'
+                                }
+                            }
+                        },
+                        y: {
+                            ticks: {
+                                font: {
+                                    family: 'Cairo',
+                                    size: 10
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            labels: {
+                                font: {
+                                    family: 'Cairo'
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Specialization Chart
+            const specializationCtx = document.getElementById('specializationChart').getContext('2d');
+            const specializations = {
+                'الإسلامية والعربية': 0,
+                'الإنسانية والتربوية': 0,
+                'الهندسية': 0,
+                'الصحية': 0,
+                'العلمية': 0,
+                'مؤسسي': 0
+            };
+            
+            programsData.forEach(item => {
+                specializations[item.specialization] = (specializations[item.specialization] || 0) + item.count;
+            });
+
+            charts.specialization = new Chart(specializationCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(specializations),
+                    datasets: [{
+                        data: Object.values(specializations),
+                        backgroundColor: [
+                            '#667eea',
+                            '#764ba2',
+                            '#f093fb',
+                            '#4facfe',
+                            '#43e97b',
+                            '#fa709a'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                font: {
+                                    family: 'Cairo',
+                                    size: 12
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Program Type Chart
+            const programTypeCtx = document.getElementById('programTypeChart').getContext('2d');
+            const programTypes = {
+                'بكالوريوس': 0,
+                'ماجستير': 0,
+                'دكتوراه': 0,
+                'مؤسسي': 0
+            };
+            
+            programsData.forEach(item => {
+                if (item.program.includes('بكالوريوس')) {
+                    programTypes['بكالوريوس'] += item.count;
+                } else if (item.program.includes('دكتوراه')) {
+                    programTypes['دكتوراه'] += item.count;
+                } else if (item.program.includes('ماجستير')) {
+                    programTypes['ماجستير'] += item.count;
+                } else if (item.specialization === 'مؤسسي') {
+                    programTypes['مؤسسي'] += 1;
+                }
+            });
+
+            charts.programType = new Chart(programTypeCtx, {
+                type: 'polarArea',
+                data: {
+                    labels: Object.keys(programTypes),
+                    datasets: [{
+                        data: Object.values(programTypes),
+                        backgroundColor: [
+                            'rgba(102, 126, 234, 0.7)',
+                            'rgba(118, 75, 162, 0.7)',
+                            'rgba(240, 147, 251, 0.7)',
+                            'rgba(79, 172, 254, 0.7)'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                font: {
+                                    family: 'Cairo',
+                                    size: 12
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function switchTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Remove active from all buttons
+            document.querySelectorAll('.nav-tab').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Show selected tab
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+            
+            // Initialize specific tab content
+            if (tabName === 'universities') {
+                populateUniversitiesTable();
+            } else if (tabName === 'programs') {
+                populateProgramsTable();
+                populateUniversityFilter();
+            } else if (tabName === 'timeline') {
+                populateTimeline();
+            }
+        }
+
+        function populateUniversitiesTable() {
+            const tbody = document.getElementById('universitiesTableBody');
+            tbody.innerHTML = '';
+            
+            const universityMap = {};
+            programsData.forEach(item => {
+                if (!universityMap[item.university]) {
+                    universityMap[item.university] = {
+                        programs: 0,
+                        specialization: item.specialization,
+                        status: item.status,
+                        date: item.date
+                    };
+                }
+                universityMap[item.university].programs += item.count;
+            });
+            
+            Object.keys(universityMap).forEach(university => {
+                const data = universityMap[university];
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><strong>${university}</strong></td>
+                    <td>${data.programs}</td>
+                    <td>${data.specialization}</td>
+                    <td><span class="status-badge ${getStatusClass(data.status)}">${data.status}</span></td>
+                    <td>${data.date}</td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function populateProgramsTable() {
+            const tbody = document.getElementById('programsTableBody');
+            tbody.innerHTML = '';
+            
+            programsData.forEach(item => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><strong>${item.program}</strong></td>
+                    <td>${item.university}</td>
+                    <td>${item.specialization}</td>
+                    <td>${item.date}</td>
+                    <td><span class="status-badge ${getStatusClass(item.status)}">${item.status}</span></td>
+                    <td>${item.count}</td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function populateUniversityFilter() {
+            const select = document.getElementById('universityFilter');
+            const universities = [...new Set(programsData.map(item => item.university))].sort();
+            
+            universities.forEach(uni => {
+                const option = document.createElement('option');
+                option.value = uni;
+                option.textContent = uni;
+                select.appendChild(option);
+            });
+        }
+
+        function populateTimeline() {
+            const timeline = document.getElementById('timelineContent');
+            timeline.innerHTML = '';
+            
+            // Group by date
+            const dateMap = {};
+            programsData.forEach(item => {
+                if (!dateMap[item.date]) {
+                    dateMap[item.date] = [];
+                }
+                dateMap[item.date].push(item);
+            });
+            
+            // Sort dates
+            const sortedDates = Object.keys(dateMap).sort((a, b) => new Date(a) - new Date(b));
+            
+            sortedDates.forEach(date => {
+                const items = dateMap[date];
+                const timelineItem = document.createElement('div');
+                timelineItem.className = 'timeline-item';
+                
+                const programs = items.map(item => 
+                    `<li>${item.program} - ${item.university} (${item.status})</li>`
+                ).join('');
+                
+                timelineItem.innerHTML = `
+                    <div class="timeline-date">${date}</div>
+                    <div class="timeline-content">
+                        <strong>عدد البرامج: ${items.length}</strong>
+                        <ul style="margin-top: 10px; margin-right: 20px;">
+                            ${programs}
+                        </ul>
+                    </div>
+                `;
+                
+                timeline.appendChild(timelineItem);
+            });
+        }
+
+        function getStatusClass(status) {
+            if (status === 'نُفذت الزيارة') return 'status-completed';
+            if (status === 'أُرسلت الدعوات') return 'status-pending';
+            if (status.includes('للمراجعة')) return 'status-review';
+            return 'status-institutional';
+        }
+
+        function filterTable() {
+            const specFilter = document.getElementById('specializationFilter').value;
+            const statusFilter = document.getElementById('statusFilter').value;
+            const tbody = document.getElementById('universitiesTableBody');
+            const rows = tbody.getElementsByTagName('tr');
+            
+            Array.from(rows).forEach(row => {
+                const spec = row.cells[2].textContent;
+                const status = row.cells[3].textContent;
+                
+                const specMatch = specFilter === 'all' || spec === specFilter;
+                const statusMatch = statusFilter === 'all' || status.includes(statusFilter);
+                
+                row.style.display = (specMatch && statusMatch) ? '' : 'none';
+            });
+        }
+
+        function resetFilters() {
+            document.getElementById('specializationFilter').value = 'all';
+            document.getElementById('statusFilter').value = 'all';
+            filterTable();
+        }
+
+        function searchPrograms() {
+            const input = document.getElementById('programSearch').value.toLowerCase();
+            const tbody = document.getElementById('programsTableBody');
+            const rows = tbody.getElementsByTagName('tr');
+            
+            Array.from(rows).forEach(row => {
+                const program = row.cells[0].textContent.toLowerCase();
+                row.style.display = program.includes(input) ? '' : 'none';
+            });
+        }
+
+        function filterPrograms() {
+            const uniFilter = document.getElementById('universityFilter').value;
+            const tbody = document.getElementById('programsTableBody');
+            const rows = tbody.getElementsByTagName('tr');
+            
+            Array.from(rows).forEach(row => {
+                const uni = row.cells[1].textContent;
+                row.style.display = (uniFilter === 'all' || uni === uniFilter) ? '' : 'none';
+            });
+        }
+
+        function resetProgramFilters() {
+            document.getElementById('programSearch').value = '';
+            document.getElementById('universityFilter').value = 'all';
+            searchPrograms();
+            filterPrograms();
+        }
+
+        // Initialize on page load
+        window.addEventListener('load', () => {
+            initCharts();
+            populateUniversitiesTable();
+        });
+    </script>
 </body>
 </html>
