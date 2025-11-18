@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تفاصيل البرامج الأكاديمية</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- الشريط الجانبي -->
+    <aside class="sidebar">
+        <div class="logo">
+            <i class="fas fa-graduation-cap"></i>
+            <h2>لوحة التحكم</h2>
+        </div>
+        <nav class="nav-menu">
+            <a href="index.html" class="nav-item">
+                <i class="fas fa-home"></i>
+                <span>الرئيسية</span>
+            </a>
+            <a href="dashboard.html" class="nav-item">
+                <i class="fas fa-chart-line"></i>
+                <span>لوحة المعلومات</span>
+            </a>
+            <a href="universities.html" class="nav-item">
+                <i class="fas fa-university"></i>
+                <span>إحصائيات الجامعات</span>
+            </a>
+            <a href="programs.html" class="nav-item active">
+                <i class="fas fa-book"></i>
+                <span>تفاصيل البرامج</span>
+            </a>
+        </nav>
+    </aside>
+
+    <!-- المحتوى الرئيسي -->
+    <main class="main-content">
+        <!-- الشريط العلوي -->
+        <header class="top-bar">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="البحث عن برنامج..." id="searchInput">
+            </div>
+            <div class="user-info">
+                <span class="date" id="currentDate"></span>
+                <div class="user-avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+            </div>
+        </header>
+
+        <!-- محتوى البرامج -->
+        <section class="content">
+            <div class="page-header">
+                <h1 class="page-title">تفاصيل البرامج الأكاديمية</h1>
+                <div class="filter-controls">
+                    <select id="specialtyFilter" class="filter-select">
+                        <option value="all">كل التخصصات</option>
+                        <option value="الإسلامية والعربية">الإسلامية والعربية</option>
+                        <option value="الإنسانية والتربوية">الإنسانية والتربوية</option>
+                        <option value="الصحية">الصحية</option>
+                        <option value="العلمية">العلمية</option>
+                        <option value="الهندسية">الهندسية</option>
+                    </select>
+                    <select id="levelFilter" class="filter-select">
+                        <option value="all">كل المستويات</option>
+                        <option value="بكالوريوس">بكالوريوس</option>
+                        <option value="ماجستير">ماجستير</option>
+                        <option value="دكتوراه">دكتوراه</option>
+                    </select>
+                    <select id="statusFilter" class="filter-select">
+                        <option value="all">كل الحالات</option>
+                        <option value="نُفذت الزيارة">نُفذت الزيارة</option>
+                        <option value="أُرسلت الدعوات">أُرسلت الدعوات</option>
+                        <option value="للمراجعة من الإدارة المختصة واعادة العرض على اللجنة">للمراجعة</option>
+                    </select>
+                    <button class="export-btn" onclick="exportTableToCSV()">
+                        <i class="fas fa-download"></i> تصدير البيانات
+                    </button>
+                </div>
+            </div>
+
+            <!-- بطاقات الإحصائيات -->
+            <div class="stats-grid">
+                <div class="stat-card blue">
+                    <div class="stat-icon">
+                        <i class="fas fa-book"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>إجمالي البرامج</h3>
+                        <p class="stat-number" id="totalPrograms">0</p>
+                    </div>
+                </div>
+
+                <div class="stat-card green">
+                    <div class="stat-icon">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>برامج البكالوريوس</h3>
+                        <p class="stat-number" id="bachelorPrograms">0</p>
+                    </div>
+                </div>
+
+                <div class="stat-card orange">
+                    <div class="stat-icon">
+                        <i class="fas fa-user-graduate"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>برامج الماجستير</h3>
+                        <p class="stat-number" id="masterPrograms">0</p>
+                    </div>
+                </div>
+
+                <div class="stat-card purple">
+                    <div class="stat-icon">
+                        <i class="fas fa-award"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>برامج الدكتوراه</h3>
+                        <p class="stat-number" id="phdPrograms">0</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- قسم البطاقات -->
+            <div class="programs-section">
+                <div class="section-header">
+                    <h2>جميع البرامج الأكاديمية</h2>
+                    <div class="view-toggle">
+                        <button class="view-btn active" onclick="toggleView('cards')" id="cardsViewBtn">
+                            <i class="fas fa-th"></i> عرض بطاقات
+                        </button>
+                        <button class="view-btn" onclick="toggleView('table')" id="tableViewBtn">
+                            <i class="fas fa-list"></i> عرض جدول
+                        </button>
+                    </div>
+                </div>
+
+                <!-- عرض البطاقات -->
+                <div id="cardsView" class="programs-grid">
+                    <!-- سيتم ملء البطاقات ديناميكياً -->
+                </div>
+
+                <!-- عرض الجدول -->
+                <div id="tableView" class="table-container" style="display: none;">
+                    <table class="data-table" id="programsTable">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>اسم البرنامج</th>
+                                <th>الجامعة</th>
+                                <th>التخصص</th>
+                                <th>المستوى</th>
+                                <th>تاريخ الزيارة</th>
+                                <th>الحالة</th>
+                            </tr>
+                        </thead>
+                        <tbody id="programsTableBody">
+                            <!-- سيتم ملء البيانات ديناميكياً -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- نافذة منبثقة لتفاصيل البرنامج -->
+            <div id="programModal" class="modal">
+                <div class="modal-content">
+                    <span class="close-modal">&times;</span>
+                    <div id="modalContent">
+                        <!-- سيتم ملء التفاصيل ديناميكياً -->
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="data.js"></script>
+    <script src="programs.js"></script>
+</body>
+</html>

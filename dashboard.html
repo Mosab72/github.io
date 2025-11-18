@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة المعلومات - التحليلات والرسوم البيانية</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+    <!-- الشريط الجانبي -->
+    <aside class="sidebar">
+        <div class="logo">
+            <i class="fas fa-graduation-cap"></i>
+            <h2>لوحة التحكم</h2>
+        </div>
+        <nav class="nav-menu">
+            <a href="index.html" class="nav-item">
+                <i class="fas fa-home"></i>
+                <span>الرئيسية</span>
+            </a>
+            <a href="dashboard.html" class="nav-item active">
+                <i class="fas fa-chart-line"></i>
+                <span>لوحة المعلومات</span>
+            </a>
+            <a href="universities.html" class="nav-item">
+                <i class="fas fa-university"></i>
+                <span>إحصائيات الجامعات</span>
+            </a>
+            <a href="programs.html" class="nav-item">
+                <i class="fas fa-book"></i>
+                <span>تفاصيل البرامج</span>
+            </a>
+        </nav>
+    </aside>
+
+    <!-- المحتوى الرئيسي -->
+    <main class="main-content">
+        <!-- الشريط العلوي -->
+        <header class="top-bar">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="البحث...">
+            </div>
+            <div class="user-info">
+                <span class="date" id="currentDate"></span>
+                <div class="user-avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+            </div>
+        </header>
+
+        <!-- محتوى لوحة المعلومات -->
+        <section class="content">
+            <h1 class="page-title">التحليلات والرسوم البيانية</h1>
+
+            <!-- بطاقات الإحصائيات السريعة -->
+            <div class="stats-grid">
+                <div class="stat-card blue">
+                    <div class="stat-icon">
+                        <i class="fas fa-university"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>عدد الجامعات</h3>
+                        <p class="stat-number" id="totalUniversities">0</p>
+                    </div>
+                </div>
+
+                <div class="stat-card green">
+                    <div class="stat-icon">
+                        <i class="fas fa-book"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>إجمالي البرامج</h3>
+                        <p class="stat-number" id="totalPrograms">0</p>
+                    </div>
+                </div>
+
+                <div class="stat-card orange">
+                    <div class="stat-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>الزيارات المنفذة</h3>
+                        <p class="stat-number" id="completedVisits">0</p>
+                    </div>
+                </div>
+
+                <div class="stat-card purple">
+                    <div class="stat-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>الزيارات المعلقة</h3>
+                        <p class="stat-number" id="pendingVisits">0</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- الرسوم البيانية -->
+            <div class="charts-grid">
+                <!-- رسم بياني شريطي: الزيارات حسب الجامعة -->
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <h3><i class="fas fa-chart-bar"></i> عدد الزيارات حسب الجامعة</h3>
+                        <div class="chart-controls">
+                            <select id="universityFilter" class="filter-select">
+                                <option value="all">جميع الجامعات</option>
+                                <option value="top10">أعلى 10 جامعات</option>
+                            </select>
+                        </div>
+                    </div>
+                    <canvas id="universityVisitsChart"></canvas>
+                </div>
+
+                <!-- رسم بياني دائري: توزيع حالة البرامج -->
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <h3><i class="fas fa-chart-pie"></i> توزيع حالة البرامج</h3>
+                    </div>
+                    <canvas id="programStatusChart"></canvas>
+                </div>
+
+                <!-- رسم بياني شريطي: البرامج حسب التخصص -->
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <h3><i class="fas fa-layer-group"></i> توزيع البرامج حسب التخصص</h3>
+                    </div>
+                    <canvas id="specialtyDistributionChart"></canvas>
+                </div>
+
+                <!-- رسم بياني خطي: الزيارات عبر الوقت -->
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <h3><i class="fas fa-calendar-alt"></i> الجدول الزمني للزيارات</h3>
+                        <div class="chart-controls">
+                            <select id="timelineFilter" class="filter-select">
+                                <option value="all">كل الفترة</option>
+                                <option value="completed">المنفذة فقط</option>
+                                <option value="pending">المعلقة فقط</option>
+                            </select>
+                        </div>
+                    </div>
+                    <canvas id="visitsTimelineChart"></canvas>
+                </div>
+
+                <!-- رسم بياني: البرامج حسب المستوى الأكاديمي -->
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <h3><i class="fas fa-graduation-cap"></i> توزيع المستويات الأكاديمية</h3>
+                    </div>
+                    <canvas id="academicLevelChart"></canvas>
+                </div>
+
+                <!-- رسم بياني: أداء الجامعات -->
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <h3><i class="fas fa-trophy"></i> أداء الجامعات (حسب عدد البرامج)</h3>
+                    </div>
+                    <canvas id="universityPerformanceChart"></canvas>
+                </div>
+            </div>
+
+            <!-- جدول الملخص -->
+            <div class="summary-section">
+                <h2>ملخص البيانات</h2>
+                <div class="summary-cards">
+                    <div class="summary-card">
+                        <h4>البرامج الإسلامية والعربية</h4>
+                        <p class="summary-number" id="islamicSummary">0</p>
+                        <small>برنامج</small>
+                    </div>
+                    <div class="summary-card">
+                        <h4>البرامج الإنسانية والتربوية</h4>
+                        <p class="summary-number" id="educationSummary">0</p>
+                        <small>برنامج</small>
+                    </div>
+                    <div class="summary-card">
+                        <h4>البرامج الصحية</h4>
+                        <p class="summary-number" id="healthSummary">0</p>
+                        <small>برنامج</small>
+                    </div>
+                    <div class="summary-card">
+                        <h4>البرامج العلمية</h4>
+                        <p class="summary-number" id="scienceSummary">0</p>
+                        <small>برنامج</small>
+                    </div>
+                    <div class="summary-card">
+                        <h4>البرامج الهندسية</h4>
+                        <p class="summary-number" id="engineeringSummary">0</p>
+                        <small>برنامج</small>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="data.js"></script>
+    <script src="charts.js"></script>
+</body>
+</html>
